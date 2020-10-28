@@ -1,28 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:slideshow/src/models/sliders_model.dart';
 
-class SlideShowPage extends StatelessWidget {
-  static const route = "/slide";
+class SliderShow extends StatelessWidget {
+
+  final List<Widget> slides;
+  final bool dotsUp;
+  final Color primaryColor;
+  final Color secondaryColor;
+
+  SliderShow({@required this.slides, this.dotsUp = false, this.primaryColor = Colors.yellow, this.secondaryColor = Colors.grey});
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => SliderModel(),
-      child: Scaffold(
-        body: Center(
-          child: Column(
-            children: [
-              Expanded(child: _Slides()),
-              _Dots()
-            ],
+      child: SafeArea(
+            child: Center(
+              child: Column(
+                children: [
+                  if(this.dotsUp) _Dots(length: this.slides.length, primaryColor: primaryColor,secondaryColor: secondaryColor,),
+                    Expanded(child: _Slides(this.slides)),
+                  if(!this.dotsUp) _Dots(length: this.slides.length, primaryColor: primaryColor,secondaryColor: secondaryColor,),
+                ],
+              ),
           ),
-        )),
+      ),
     );
   }
 }
 
 class _Dots extends StatelessWidget {
+  final int length;
+  final Color primaryColor;
+  final Color secondaryColor;
+  _Dots({@required this.length, this.primaryColor, this.secondaryColor});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -30,14 +42,7 @@ class _Dots extends StatelessWidget {
       height: 75,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _Dot(0),
-          _Dot(1),
-          _Dot(2),
-          _Dot(3),
-          _Dot(4),
-          _Dot(5),
-        ],),
+        children: List.generate(this.length, (index) => _Dot(index, primaryColor, secondaryColor))),
     );
   }
 }
@@ -45,8 +50,10 @@ class _Dots extends StatelessWidget {
 class _Dot extends StatelessWidget {
 
   final int _id;
+  final Color primaryColor;
+  final Color secondaryColor;
 
-  _Dot(this._id);
+  _Dot(this._id, this.primaryColor, this.secondaryColor);
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +65,7 @@ class _Dot extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 5.0),
       decoration: BoxDecoration(
         color: (index >= _id - 0.5 && index <= _id + 0.5)
-                ? Colors.yellow : Colors.grey,
+                ? primaryColor : secondaryColor,
         shape: BoxShape.circle
       ),
     );
@@ -66,6 +73,10 @@ class _Dot extends StatelessWidget {
 }
 
 class _Slides extends StatefulWidget {
+
+  final List<Widget> slides;
+  _Slides(this.slides);
+
   @override
   __SlidesState createState() => __SlidesState();
 }
@@ -93,14 +104,7 @@ class __SlidesState extends State<_Slides> {
     return Container(
       child: PageView(
         controller: controller,
-        children: [
-          _Slide("assets/svgs/1.svg"),
-          _Slide("assets/svgs/2.svg"),
-          _Slide("assets/svgs/3.svg"),
-          _Slide("assets/svgs/4.svg"),
-          _Slide("assets/svgs/5.svg"),
-          _Slide("assets/svgs/6.svg"),
-        ],
+        children: widget.slides.map((e) => _Slide(e)).toList(),
       ),
     );
   }
@@ -108,9 +112,9 @@ class __SlidesState extends State<_Slides> {
 
 class _Slide extends StatelessWidget {
   
-  final String svg;
+  final Widget slide;
 
-  _Slide(this.svg);
+  _Slide(this.slide);
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +122,7 @@ class _Slide extends StatelessWidget {
       width: double.infinity,
       height: double.infinity,
       padding: EdgeInsets.all(10.0),
-      child: SvgPicture.asset(svg)
+      child: slide
       );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:slideshow/src/pages/slideshow_page.dart';
+import 'package:slideshow/src/pages/slider_page.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -11,13 +12,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Slides',
-      initialRoute: SlideShowPage.route,
+      debugShowCheckedModeBanner: false,
+      initialRoute: MySliderShowPage.route,
       onGenerateRoute: (settings){
         switch(settings.name){
-          case SlideShowPage.route:
-            return MaterialPageRoute(builder: (_) => SlideShowPage());
+          case MySliderShowPage.route:
+            return MaterialPageRoute(builder: (_) => MySliderShowPage());
           default:
-            return MaterialPageRoute(builder: (_) => SlideShowPage());
+            return MaterialPageRoute(builder: (_) => MySliderShowPage());
         }
       },
     );
