@@ -58,10 +58,12 @@ class _Dot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final index = Provider.of<SliderModel>(context).currentPage;
+    final size = (index >= _id - 0.5 && index <= _id + 0.5) ? 20.0 : 12.0;
     return AnimatedContainer(
-      duration: Duration(milliseconds: 200),
-      width: 12,
-      height: 12,
+      duration: Duration(milliseconds: 1000),
+      curve: Curves.easeOutCirc,
+      width: size,
+      height: size,
       margin: EdgeInsets.symmetric(horizontal: 5.0),
       decoration: BoxDecoration(
         color: (index >= _id - 0.5 && index <= _id + 0.5)
